@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laravel\SerializableClosure\Serializers;
 
 use Closure;
@@ -62,7 +64,7 @@ class Native implements Serializable
     /**
      * The "key" that marks an array as recursive.
      */
-    const ARRAY_RECURSIVE_KEY = 'LARAVEL_SERIALIZABLE_RECURSIVE_KEY';
+    public const ARRAY_RECURSIVE_KEY = 'LARAVEL_SERIALIZABLE_RECURSIVE_KEY';
 
     /**
      * Creates a new serializable closure instance.
@@ -72,8 +74,7 @@ class Native implements Serializable
          * The closure to be serialized/unserialized.
          */
         protected \Closure $closure
-    )
-    {
+    ) {
     }
 
     /**
@@ -327,8 +328,7 @@ class Native implements Serializable
                     $data[$key] = &$value->closure;
                 } elseif ($value instanceof SelfReference && $value->hash === $this->code['self']) {
                     $data[$key] = &$this->closure;
-                }
-                else {
+                } else {
                     $this->mapPointers($value);
                 }
             }

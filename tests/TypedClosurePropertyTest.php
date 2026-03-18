@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Tests\Fixtures\ClassWithTypedClosureProperty;
 
 test('respect serialization of typed Closure property via use', function () {

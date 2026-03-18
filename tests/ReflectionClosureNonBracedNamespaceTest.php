@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Space;
 
 test('relative namespace (non-braced)', function () {
@@ -14,6 +16,7 @@ test('relative namespace (non-braced)', function () {
 });
 
 namespace Irrelevant;
+
 namespace Sub\Space;
 
 test('relative other namespace (non-braced)', function () {
@@ -26,7 +29,6 @@ test('relative other namespace (non-braced)', function () {
 namespace Irrelevant;
 
 // Shouldn't be used below, as not in the same namespace
-use Wrong as Qux;
 
 namespace Space;
 

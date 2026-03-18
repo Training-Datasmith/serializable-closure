@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 // Fake
 use Some\ClassName as ClassAlias;
 use Tests\Fixtures\RegularClass;
@@ -69,7 +71,7 @@ test('null safe operator with properties', function () {
 });
 
 test('trailing comma', function () {
-    $f1 = function (string $param, ) {
+    $f1 = function (string $param) {
     };
     $e1 = 'function (string $param, ) {
     }';
@@ -91,7 +93,7 @@ test('named arguments', function () {
 
 test('single named argument within closures', function () {
     $f1 = function () {
-        return (new ReflectionClosurePhp80NamedArguments)->publicMethod(namedArgument: 'string');
+        return (new ReflectionClosurePhp80NamedArguments())->publicMethod(namedArgument: 'string');
     };
 
     $e1 = "function () {
@@ -103,7 +105,7 @@ test('single named argument within closures', function () {
 
 test('multiple named arguments within closures', function () {
     $f1 = function () {
-        return (new ReflectionClosurePhp80NamedArguments)->publicMethod(namedArgument: 'string', namedArgumentB: 1);
+        return (new ReflectionClosurePhp80NamedArguments())->publicMethod(namedArgument: 'string', namedArgumentB: 1);
     };
 
     $e1 = "function () {
@@ -138,7 +140,7 @@ test('named arguments with switch cases and instanceof', function () {
 test('multiple named arguments within nested closures', function () {
     $f1 = function () {
         $fn = fn ($namedArgument, $namedArgumentB) => (
-            new ReflectionClosurePhp80NamedArguments
+            new ReflectionClosurePhp80NamedArguments()
         )->publicMethod(namedArgument: $namedArgument, namedArgumentB: $namedArgumentB);
 
         return $fn(namedArgument: 'string', namedArgumentB: 1);
@@ -233,7 +235,7 @@ test('switch statement', function () {
                 return 'two';
             case ReflectionClosurePhp80SwitchStatementTest::isThree(a: $a):
                 return 'three';
-            case (new ReflectionClosurePhp80SwitchStatementTest)->isFour(a: $a):
+            case (new ReflectionClosurePhp80SwitchStatementTest())->isFour(a: $a):
                 return 'four';
             case ($a instanceof ReflectionClosurePhp80SwitchStatementTest):
                 return 'five';
@@ -294,7 +296,7 @@ test('match statement', function () {
             $a === 1 => 'one',
             reflection_closure_php_80_match_statement_test_is_two($a) => 'two',
             ReflectionClosurePhp80MatchStatementTest::isThree(a: $a) => 'three',
-            (new ReflectionClosurePhp80MatchStatementTest)->isFour($a) => 'four',
+            (new ReflectionClosurePhp80MatchStatementTest())->isFour($a) => 'four',
             $a instanceof ReflectionClosurePhp80MatchStatementTest => 'five',
             $a instanceof DateTime => 'six',
             $a instanceof RegularClass => 'seven',

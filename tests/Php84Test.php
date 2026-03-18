@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 it('can serialize class with virtual properties', function () {
     $binding = new ClosureBinding();
 
@@ -20,7 +22,8 @@ it('can serialize class with virtual properties', function () {
  * This bound closure is needed to test `wrapClosures()` of `Native` and ensure it handles
  * virtual properties correctly.
  */
-class ClosureBinding {
+class ClosureBinding
+{
     public Closure $closure {
         get {
             $virtualProps = new VirtualPropWithPhp84();
@@ -35,7 +38,8 @@ class ClosureBinding {
     }
 }
 
-class VirtualPropWithPhp84 {
+class VirtualPropWithPhp84
+{
     public string $virtualString {
         get => 'virtual string';
     }
@@ -49,4 +53,6 @@ class VirtualPropWithPhp84 {
     }
 }
 
-class VirtualObjectWithPhp84 {}
+class VirtualObjectWithPhp84
+{
+}

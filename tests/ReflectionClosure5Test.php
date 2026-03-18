@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Foo\Bar as Baz;
 use Foo\Baz\Qux;
 use Foo\Baz\Qux\Forest;
@@ -57,19 +59,19 @@ test('resolve types', function () {
     $f4 = fn () => new Qux();
     $e4 = 'fn () => new \Foo\Baz\Qux()';
 
-    $f5 = fn () => new class extends Baz\Qux {};
+    $f5 = fn () => new class () extends Baz\Qux {};
     $e5 = 'fn () => new class extends \Foo\Bar\Qux {}';
 
-    $f6 = fn () => new class extends Baz\Qux implements Baz\Qux {};
+    $f6 = fn () => new class () extends Baz\Qux implements Baz\Qux {};
     $e6 = 'fn () => new class extends \Foo\Bar\Qux implements \Foo\Bar\Qux {}';
 
-    $f7 = fn () => new class implements Baz\Qux, Baz\Qux {};
+    $f7 = fn () => new class () implements Baz\Qux, Baz\Qux {};
     $e7 = 'fn () => new class implements \Foo\Bar\Qux, \Foo\Bar\Qux {}';
 
     $f8 = function () {
-        $a = new class implements Baz\Qux, Baz\Qux {};
+        $a = new class () implements Baz\Qux, Baz\Qux {};
 
-        $b = new class implements Baz\Qux {};
+        $b = new class () implements Baz\Qux {};
     };
 
     $e8 = 'function () {
@@ -79,21 +81,19 @@ test('resolve types', function () {
     }';
 
     $f9 = function () {
-        $a = new class implements Baz\Qux, Baz\Qux {};
+        $a = new class () implements Baz\Qux, Baz\Qux {};
 
-        $b = new class extends Forest implements Baz\Qux
-        {
+        $b = new class () extends Forest implements Baz\Qux {
             public Baz\Qux $qux;
 
             public function foo()
             {
-                return new class {};
+                return new class () {};
             }
 
             public function qux(Baz\Qux $qux): Baz\Qux
             {
-                return static fn () => new class extends Forest implements Baz\Qux {
-                    //
+                return static fn () => new class () extends Forest implements Baz\Qux {
                 };
             }
         };
@@ -223,7 +223,7 @@ test('group namespaces', function () {
 });
 
 test('from callable namespaces', function () {
-    $f = Closure::fromCallable([new Model, 'make']);
+    $f = Closure::fromCallable([new Model(), 'make']);
 
     $e = 'function (\Tests\Fixtures\Model $model): \Tests\Fixtures\Model
     {
@@ -248,7 +248,7 @@ test('ternanry operator new without constructor', function () {
     $f = function () {
         $flag = true;
 
-        return $flag ? new RegularClass : new RegularClass;
+        return $flag ? new RegularClass() : new RegularClass();
     };
     $e = 'function () {
         $flag = true;

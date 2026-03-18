@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Support\Carbon;
 use Tests\Fixtures\Model;
 use Tests\Fixtures\ModelAttribute;
@@ -27,7 +29,8 @@ test('enums', function () {
     expect($f())->toBe(SerializerGlobalEnum::Admin);
 
     if (! enum_exists(SerializerScopedEnum::class)) {
-        enum SerializerScopedEnum {
+        enum SerializerScopedEnum
+        {
             case Admin;
             case Guest;
             case Moderator;
@@ -86,7 +89,8 @@ test('backed enums', function () {
     expect($f())->toBe(SerializerGlobalBackedEnum::Admin);
 
     if (! enum_exists(SerializerScopedBackedEnum::class)) {
-        enum SerializerScopedBackedEnum: string {
+        enum SerializerScopedBackedEnum: string
+        {
             case Admin = 'Administrator';
             case Guest = 'Guest';
             case Moderator = 'Moderator';
@@ -284,7 +288,7 @@ test('intersection types', function () {
 
     $f = s($f);
 
-    expect($f(new SerializerPhp81Service))->toBeInstanceOf(
+    expect($f(new SerializerPhp81Service()))->toBeInstanceOf(
         SerializerPhp81Service::class,
     );
 })->with('serializers');
@@ -338,7 +342,7 @@ test('first-class callable namespaces', function () {
 
     $f = s($f);
 
-    expect($f(new Model))->toBeInstanceOf(Model::class);
+    expect($f(new Model()))->toBeInstanceOf(Model::class);
 })->with('serializers');
 
 test('static first-class callable namespaces', function () {
@@ -348,7 +352,7 @@ test('static first-class callable namespaces', function () {
 
     $f = s($f);
 
-    expect($f(new Model))->toBeInstanceOf(Model::class);
+    expect($f(new Model()))->toBeInstanceOf(Model::class);
 })->with('serializers');
 
 test('function attributes without arguments', function () {
@@ -396,7 +400,7 @@ test('function attributes with arguments', function () {
 test('function attributes with array arguments', function () {
     $model = new Model();
 
-    $f = #[MyAttribute("My Argument", ["one", "two"])] function () {
+    $f = #[MyAttribute('My Argument', ['one', 'two'])] function () {
         return false;
     };
 
@@ -408,8 +412,8 @@ test('function attributes with array arguments', function () {
         fn ($attribute) => $attribute
             ->getName()->toBe(MyAttribute::class)
             ->getArguments()->toBe([
-                "My Argument",
-                ["one", "two"],
+                'My Argument',
+                ['one', 'two'],
             ])
     );
 
@@ -626,16 +630,23 @@ test('function attributes with first-class callable with methods', function () {
     expect($f())->toBeInstanceOf(SerializerPhp81Service::class);
 })->with('serializers');
 
-interface SerializerPhp81HasId {}
-interface SerializerPhp81HasName {}
+interface SerializerPhp81HasId
+{
+}
+interface SerializerPhp81HasName
+{
+}
 
-class SerializerPhp81Child extends SerializerPhp81Parent {}
+class SerializerPhp81Child extends SerializerPhp81Parent
+{
+}
 
 class SerializerPhp81Parent
 {
     public function __construct(
         public readonly int $property = 1,
-    ) {}
+    ) {
+    }
 }
 
 class SerializerPhp81Service implements SerializerPhp81HasId, SerializerPhp81HasName
@@ -709,19 +720,21 @@ class SerializerPhp81Controller
     }
 }
 
-enum SerializerGlobalEnum {
+enum SerializerGlobalEnum
+{
     case Admin;
     case Guest;
     case Moderator;
 }
 
-enum SerializerGlobalBackedEnum: string {
+enum SerializerGlobalBackedEnum: string
+{
     case Admin = 'Administrator';
     case Guest = 'Guest';
     case Moderator = 'Moderator';
 }
 
-#[Attribute(Attribute::TARGET_METHOD|Attribute::TARGET_FUNCTION)]
+#[Attribute(Attribute::TARGET_METHOD | Attribute::TARGET_FUNCTION)]
 class MyAttribute
 {
     public function __construct(public $string, public $model)

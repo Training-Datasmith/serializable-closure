@@ -1,9 +1,11 @@
 <?php
 
-use Foo\Bar;
+declare(strict_types=1);
+
 use Foo\{
     Bar as Baz,
 };
+use Foo\Bar;
 use ReflectionClosure4Class as SomeAlias;
 
 test('resolve arguments', function () {

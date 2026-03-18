@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Laravel\SerializableClosure\Exceptions\InvalidSignatureException;
 use Laravel\SerializableClosure\SerializableClosure;
 

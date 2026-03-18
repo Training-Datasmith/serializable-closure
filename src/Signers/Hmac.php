@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laravel\SerializableClosure\Signers;
 
 use Laravel\SerializableClosure\Contracts\Signer;
@@ -16,8 +18,7 @@ class Hmac implements Signer
          * The secret key.
          */
         protected $secret
-    )
-    {
+    ) {
     }
 
     /**

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laravel\SerializableClosure\Support;
 
 #[\AllowDynamicProperties]
@@ -10,7 +12,7 @@ class ClosureStream
      *
      * @var string
      */
-    const STREAM_PROTO = 'laravel-serializable-closure';
+    public const STREAM_PROTO = 'laravel-serializable-closure';
 
     /**
      * Checks if this stream is registered.

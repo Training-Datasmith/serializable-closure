@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Tests\Fixtures\Model;
 use Tests\Fixtures\RegularClass;
 use Tests\Fixtures\Route;
@@ -17,7 +19,7 @@ test('named arguments', function () {
 
 test('single named argument within closures', function () {
     $f1 = function () {
-        return (new SerializerPhp80NamedArguments)->publicMethod(
+        return (new SerializerPhp80NamedArguments())->publicMethod(
             namedArgument: 'string'
         );
     };
@@ -30,13 +32,14 @@ test('serializing closures under namespace', function () {
 
     $s1 = s($f1);
 
-    expect('Tests\Fixtures\Route::Tests\Fixtures\{closure}')->toBe($s1(new Model));
+    expect('Tests\Fixtures\Route::Tests\Fixtures\{closure}')->toBe($s1(new Model()));
 })->with('serializers');
 
 test('multiple named arguments within closures', function () {
     $f1 = function () {
-        return (new SerializerPhp80NamedArguments)->publicMethod(
-            namedArgument: 'string', namedArgumentB: 1
+        return (new SerializerPhp80NamedArguments())->publicMethod(
+            namedArgument: 'string',
+            namedArgumentB: 1
         );
     };
 
@@ -46,7 +49,7 @@ test('multiple named arguments within closures', function () {
 test('multiple named arguments within nested closures', function () {
     $f1 = function () {
         $fn = fn ($namedArgument, $namedArgumentB) => (
-            new SerializerPhp80NamedArguments
+            new SerializerPhp80NamedArguments()
         )->publicMethod(namedArgument: $namedArgument, namedArgumentB: $namedArgumentB);
 
         return $fn(namedArgument: 'string', namedArgumentB: 1);
@@ -162,9 +165,9 @@ test('instanceof', function () {
 
     $u = s($closure);
 
-    expect($u(new DateTime))->toEqual([true, true, true])
-        ->and($u(new SerializerPhp80Class))->toEqual([true, true, true])
-        ->and($u(new stdClass))->toEqual([false, false, false]);
+    expect($u(new DateTime()))->toEqual([true, true, true])
+        ->and($u(new SerializerPhp80Class()))->toEqual([true, true, true])
+        ->and($u(new stdClass()))->toEqual([false, false, false]);
 })->with('serializers');
 
 test('switch statement', function () {
@@ -176,7 +179,7 @@ test('switch statement', function () {
                 return 'two';
             case SerializerPhp80SwitchStatementClass::isThree(a: $a):
                 return 'three';
-            case (new SerializerPhp80SwitchStatementClass)->isFour(a: $a):
+            case (new SerializerPhp80SwitchStatementClass())->isFour(a: $a):
                 return 'four';
             case $a instanceof SerializerPhp80SwitchStatementClass:
                 return 'five';
@@ -193,8 +196,8 @@ test('switch statement', function () {
         ->and($u(2))->toEqual('two')
         ->and($u(3))->toEqual('three')
         ->and($u(4))->toEqual('four')
-        ->and($u(new SerializerPhp80SwitchStatementClass))->toEqual('five')
-        ->and($u(new DateTime))->toEqual('six')
+        ->and($u(new SerializerPhp80SwitchStatementClass()))->toEqual('five')
+        ->and($u(new DateTime()))->toEqual('six')
         ->and($u(999))->toEqual('other');
 })->with('serializers');
 
@@ -222,7 +225,7 @@ test('match statement', function () {
             $a === 1 => 'one',
             serializer_php_80_match_statement_test_is_two($a) => 'two',
             SerializerPhp80MatchStatementTest::isThree($a) => 'three',
-            (new SerializerPhp80MatchStatementTest)->isFour(a: $a) => 'four',
+            (new SerializerPhp80MatchStatementTest())->isFour(a: $a) => 'four',
             $a instanceof SerializerPhp80MatchStatementTest => 'five',
             $a instanceof DateTime => 'six',
             $a instanceof RegularClass => 'seven',
@@ -236,8 +239,8 @@ test('match statement', function () {
         ->and($u(2))->toEqual('two')
         ->and($u(3))->toEqual('three')
         ->and($u(4))->toEqual('four')
-        ->and($u(new SerializerPhp80MatchStatementTest))->toEqual('five')
-        ->and($u(new DateTime))->toEqual('six')
-        ->and($u(new RegularClass))->toEqual('seven')
+        ->and($u(new SerializerPhp80MatchStatementTest()))->toEqual('five')
+        ->and($u(new DateTime()))->toEqual('six')
+        ->and($u(new RegularClass()))->toEqual('seven')
         ->and($u(999))->toEqual('other');
 })->with('serializers');

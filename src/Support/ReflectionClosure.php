@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laravel\SerializableClosure\Support;
 
 defined('T_NAME_QUALIFIED') || define('T_NAME_QUALIFIED', -4);

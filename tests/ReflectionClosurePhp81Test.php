@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 use Foo\Baz\Qux\Forest;
 use Some\ClassName as ClassAlias;
 use Tests\Fixtures\Model;
 use Tests\Fixtures\RegularClass;
-use function Tests\Fixtures\{makeModel};
 
-enum GlobalEnum {
+enum GlobalEnum
+{
     case Admin;
     case Guest;
     case Moderator;
@@ -303,7 +305,8 @@ test('enums', function () {
 
     expect($f)->toBeCode($e);
 
-    enum ScopedEnum {
+    enum ScopedEnum
+    {
         case Admin;
         case Guest;
         case Moderator;
@@ -320,8 +323,8 @@ test('enums', function () {
     expect($f)->toBeCode($e);
 });
 
-
-enum GlobalBackedEnum: string {
+enum GlobalBackedEnum: string
+{
     case Admin = 'Administrator';
     case Guest = 'Guest';
     case Moderator = 'Moderator';
@@ -339,7 +342,8 @@ test('backed enums', function () {
 
     expect($f)->toBeCode($e);
 
-    enum ScopedBackedEnum: string {
+    enum ScopedBackedEnum: string
+    {
         case Admin = 'Administrator';
         case Guest = 'Guest';
         case Moderator = 'Moderator';
@@ -721,7 +725,8 @@ class ReflectionClosurePhp81Controller
     }
 }
 
-enum ReflectionClosureGlobalEnum {
+enum ReflectionClosureGlobalEnum
+{
     case Admin;
     case Guest;
     case Moderator;

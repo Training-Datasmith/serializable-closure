@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 // Fake
 use Foo\Bar;
 use Foo\Baz as Qux;

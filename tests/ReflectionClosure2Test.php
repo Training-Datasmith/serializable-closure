@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Foo\Bar;
 // Fake
 use Foo\Baz as Qux;
@@ -149,22 +151,21 @@ test('closure inside closure', function () {
 
 test('anonymous inside closure', function () {
     $f1 = function () {
-        return new class() extends A {};
+        return new class () extends A {};
     };
     $e1 = 'function () {
         return new class() extends \A {};
     }';
 
     $f2 = function () {
-        return new class() extends A implements B {};
+        return new class () extends A implements B {};
     };
     $e2 = 'function () {
         return new class() extends \A implements \B {};
     }';
 
     $f3 = function () {
-        return new class()
-        {
+        return new class () {
             public function x(A $a): B
             {
             }
@@ -186,8 +187,7 @@ test('anonymous inside closure', function () {
 
 test('closure resolve traits names in anonymous classes', function () {
     $f1 = function () {
-        new class()
-        {
+        new class () {
             use Bar;
         };
     };
@@ -199,8 +199,7 @@ test('closure resolve traits names in anonymous classes', function () {
     }';
 
     $f2 = function () {
-        new class()
-        {
+        new class () {
             use Bar\Test;
         };
     };
@@ -212,8 +211,7 @@ test('closure resolve traits names in anonymous classes', function () {
     }';
 
     $f3 = function () {
-        new class()
-        {
+        new class () {
             use Qux;
         };
     };
@@ -225,8 +223,7 @@ test('closure resolve traits names in anonymous classes', function () {
     }';
 
     $f4 = function () {
-        new class()
-        {
+        new class () {
             use Qux\Test;
         };
     };
@@ -238,8 +235,7 @@ test('closure resolve traits names in anonymous classes', function () {
     }';
 
     $f5 = function () {
-        new class()
-        {
+        new class () {
             use \Foo;
         };
     };
@@ -251,8 +247,7 @@ test('closure resolve traits names in anonymous classes', function () {
     }';
 
     $f6 = function () {
-        new class()
-        {
+        new class () {
             use Foo;
         };
     };
@@ -264,14 +259,13 @@ test('closure resolve traits names in anonymous classes', function () {
     }';
 
     $f7 = function () {
-        new class()
-        {
+        new class () {
             use Bar;
         };
         function a(Qux $q): Bar
         {
             f1();
-            $a = new class() extends Bar {};
+            $a = new class () extends Bar {};
         }
     };
     $e7 = 'function () {
@@ -385,8 +379,7 @@ test('keyword as static method', function () {
 
 test('this inside anonymous class', function () {
     $f1 = function () {
-        return new class()
-        {
+        return new class () {
             public function a()
             {
                 $self = $this;
@@ -395,14 +388,12 @@ test('this inside anonymous class', function () {
     };
 
     $f2 = function () {
-        return new class()
-        {
+        return new class () {
             public function a()
             {
                 $self = $this;
 
-                return new class()
-                {
+                return new class () {
                     public function a()
                     {
                         $self = $this;
@@ -415,8 +406,7 @@ test('this inside anonymous class', function () {
     $f3 = function () {
         $self = $this;
 
-        return new class()
-        {
+        return new class () {
             public function a()
             {
                 $self = $this;
@@ -425,8 +415,7 @@ test('this inside anonymous class', function () {
     };
 
     $f4 = function () {
-        return new class()
-        {
+        return new class () {
             public function a()
             {
                 $self = $this;

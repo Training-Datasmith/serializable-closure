@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 // Fake
 use Foo\Bar;
 use Foo\Baz as Qux;
@@ -348,7 +350,7 @@ test('switch statement', function () {
                 return 'two';
             case ReflectionClosurePhp74SwitchStatementTest::isThree($a):
                 return 'three';
-            case (new ReflectionClosurePhp74SwitchStatementTest)->isFour($a):
+            case (new ReflectionClosurePhp74SwitchStatementTest())->isFour($a):
                 return 'four';
             case $a instanceof ReflectionClosurePhp74SwitchStatementTest:
                 return 'five';

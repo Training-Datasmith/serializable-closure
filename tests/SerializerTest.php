@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Laravel\SerializableClosure\SerializableClosure;
@@ -363,7 +365,8 @@ test('serializable closure serialization string content dont change', function (
 
     $actual = explode('s:32:', serialize($c))[0];
 
-    expect($actual)->toBe(<<<OEF
+    expect($actual)->toBe(
+        <<<OEF
 O:47:"Laravel\SerializableClosure\SerializableClosure":1:{s:12:"serializable";O:46:"Laravel\SerializableClosure\Serializers\Signed":2:{s:12:"serializable";s:264:"O:46:"Laravel\SerializableClosure\Serializers\Native":5:{s:3:"use";a:1:{s:1:"a";i:100;}s:8:"function";s:47:"function () use (\$a) {
         return \$a;
     }";s:5:"scope";s:22:"P\Tests\SerializerTest";s:4:"this";N;s:4:"self";
@@ -382,7 +385,8 @@ test('unsigned serializable closure serialization string content dont change', f
 
     $actual = explode('s:32:', serialize($c))[0];
 
-    expect($actual)->toBe(<<<OEF
+    expect($actual)->toBe(
+        <<<OEF
 O:55:"Laravel\SerializableClosure\UnsignedSerializableClosure":1:{s:12:"serializable";O:46:"Laravel\SerializableClosure\Serializers\Native":5:{s:3:"use";a:1:{s:1:"a";i:100;}s:8:"function";s:47:"function () use (\$a) {
         return \$a;
     }";s:5:"scope";s:22:"P\Tests\SerializerTest";s:4:"this";N;s:4:"self";
@@ -435,19 +439,19 @@ test('rebound closure', function () {
 })->with('serializers');
 
 test('from callable namespaces', function () {
-    $f = Closure::fromCallable([new Model, 'make']);
+    $f = Closure::fromCallable([new Model(), 'make']);
 
     $f = s($f);
 
-    expect($f(new Model))->toBeInstanceOf(Model::class);
+    expect($f(new Model()))->toBeInstanceOf(Model::class);
 })->with('serializers');
 
 test('from static callable namespaces', function () {
-    $f = Closure::fromCallable([new Model, 'staticMake']);
+    $f = Closure::fromCallable([new Model(), 'staticMake']);
 
     $f = s($f);
 
-    expect($f(new Model))->toBeInstanceOf(Model::class);
+    expect($f(new Model()))->toBeInstanceOf(Model::class);
 })->with('serializers');
 
 test('serializes used dates', function ($date, $_) {
@@ -460,14 +464,14 @@ test('serializes used dates', function ($date, $_) {
 
     expect($r)->toEqual($date);
 })->with([
-    new DateTime,
-    new DateTimeImmutable,
-    new Carbon,
-    new CarbonImmutable,
+    new DateTime(),
+    new DateTimeImmutable(),
+    new Carbon(),
+    new CarbonImmutable(),
 ])->with('serializers');
 
 test('serializes with used object date properties', function ($date, $_) {
-    $obj = new ObjSelf;
+    $obj = new ObjSelf();
     $obj->o = $date;
 
     $closure = function () use ($obj) {
@@ -479,10 +483,10 @@ test('serializes with used object date properties', function ($date, $_) {
 
     expect($r->o)->toEqual($date);
 })->with([
-    new DateTime,
-    new DateTimeImmutable,
-    new Carbon,
-    new CarbonImmutable,
+    new DateTime(),
+    new DateTimeImmutable(),
+    new Carbon(),
+    new CarbonImmutable(),
 ])->with('serializers');
 
 function serializer_php_74_switch_statement_test_is_two($a)
@@ -522,10 +526,10 @@ test('instanceof', function () {
 
     $u = s($closure);
 
-    expect($u(new DateTime))->toEqual([true, true, true])
-        ->and($u(new SerializerPhp74Class))->toEqual([true, true, true])
-        ->and($u(new Model))->toEqual([true, true, true])
-        ->and($u(new stdClass))->toEqual([false, false, false]);
+    expect($u(new DateTime()))->toEqual([true, true, true])
+        ->and($u(new SerializerPhp74Class()))->toEqual([true, true, true])
+        ->and($u(new Model()))->toEqual([true, true, true])
+        ->and($u(new stdClass()))->toEqual([false, false, false]);
 })->with('serializers');
 
 test('switch statement', function () {
@@ -537,7 +541,7 @@ test('switch statement', function () {
                 return 'two';
             case SerializerPhp74SwitchStatementClass::isThree($a):
                 return 'three';
-            case (new SerializerPhp74SwitchStatementClass)->isFour($a):
+            case (new SerializerPhp74SwitchStatementClass())->isFour($a):
                 return 'four';
             case $a instanceof SerializerPhp74SwitchStatementClass:
                 return 'five';
@@ -556,8 +560,8 @@ test('switch statement', function () {
         ->and($u(2))->toEqual('two')
         ->and($u(3))->toEqual('three')
         ->and($u(4))->toEqual('four')
-        ->and($u(new SerializerPhp74SwitchStatementClass))->toEqual('five')
-        ->and($u(new DateTime))->toEqual('six')
+        ->and($u(new SerializerPhp74SwitchStatementClass()))->toEqual('five')
+        ->and($u(new DateTime()))->toEqual('six')
         ->and($u(new Model()))->toEqual('seven')
         ->and($u(999))->toEqual('other');
 })->with('serializers');
@@ -642,5 +646,5 @@ class ObjSelf
 
 class ObjWithConst
 {
-    const FOO = 'bar';
+    public const FOO = 'bar';
 }

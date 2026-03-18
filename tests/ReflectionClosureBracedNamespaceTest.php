@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Space {
     test('relative namespace (braced)', function () {
         $f1 = fn (Foo $foo): Foo => new Foo();
@@ -34,7 +36,6 @@ namespace {
 
 namespace Irrelevant {
     // Shouldn't be used below, as not in the same namespace
-    use Wrong as Qux;
 }
 
 namespace Space {

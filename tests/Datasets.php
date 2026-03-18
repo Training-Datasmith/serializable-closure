@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Laravel\SerializableClosure\Serializers;
 use Laravel\SerializableClosure\UnsignedSerializableClosure;
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laravel\SerializableClosure\Serializers;
 
 use Laravel\SerializableClosure\Contracts\Serializable;
@@ -25,8 +27,7 @@ class Signed implements Serializable
          * The closure to be serialized/unserialized.
          */
         protected $closure
-    )
-    {
+    ) {
     }
 
     /**
