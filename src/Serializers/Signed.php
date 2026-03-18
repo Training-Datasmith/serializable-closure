@@ -16,29 +16,23 @@ class Signed implements Serializable
     public static $signer;
 
     /**
-     * The closure to be serialized/unserialized.
-     *
-     * @var \Closure
-     */
-    protected $closure;
-
-    /**
      * Creates a new serializable closure instance.
      *
      * @param  \Closure  $closure
-     * @return void
      */
-    public function __construct($closure)
+    public function __construct(
+        /**
+         * The closure to be serialized/unserialized.
+         */
+        protected $closure
+    )
     {
-        $this->closure = $closure;
     }
 
     /**
      * Resolve the closure with the given arguments.
-     *
-     * @return mixed
      */
-    public function __invoke()
+    public function __invoke(): mixed
     {
         return call_user_func_array($this->closure, func_get_args());
     }
@@ -77,7 +71,7 @@ class Signed implements Serializable
      *
      * @throws \Laravel\SerializableClosure\Exceptions\InvalidSignatureException
      */
-    public function __unserialize($signature)
+    public function __unserialize(array $signature)
     {
         if (static::$signer && ! static::$signer->verify($signature)) {
             throw new InvalidSignatureException();

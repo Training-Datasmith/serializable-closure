@@ -18,9 +18,6 @@ class SerializableClosure
 
     /**
      * Creates a new serializable closure instance.
-     *
-     * @param  \Closure  $closure
-     * @return void
      */
     public function __construct(Closure $closure)
     {
@@ -31,10 +28,8 @@ class SerializableClosure
 
     /**
      * Resolve the closure with the given arguments.
-     *
-     * @return mixed
      */
-    public function __invoke()
+    public function __invoke(): mixed
     {
         return call_user_func_array($this->serializable, func_get_args());
     }
@@ -51,11 +46,8 @@ class SerializableClosure
 
     /**
      * Create a new unsigned serializable closure instance.
-     *
-     * @param  Closure  $closure
-     * @return \Laravel\SerializableClosure\UnsignedSerializableClosure
      */
-    public static function unsigned(Closure $closure)
+    public static function unsigned(Closure $closure): \Laravel\SerializableClosure\UnsignedSerializableClosure
     {
         return new UnsignedSerializableClosure($closure);
     }
@@ -64,9 +56,8 @@ class SerializableClosure
      * Sets the serializable closure secret key.
      *
      * @param  string|null  $secret
-     * @return void
      */
-    public static function setSecretKey($secret)
+    public static function setSecretKey($secret): void
     {
         Serializers\Signed::$signer = $secret
             ? new Hmac($secret)
@@ -77,9 +68,8 @@ class SerializableClosure
      * Sets the serializable closure secret key.
      *
      * @param  \Closure|null  $transformer
-     * @return void
      */
-    public static function transformUseVariablesUsing($transformer)
+    public static function transformUseVariablesUsing($transformer): void
     {
         Serializers\Native::$transformUseVariables = $transformer;
     }
@@ -88,9 +78,8 @@ class SerializableClosure
      * Sets the serializable closure secret key.
      *
      * @param  \Closure|null  $resolver
-     * @return void
      */
-    public static function resolveUseVariablesUsing($resolver)
+    public static function resolveUseVariablesUsing($resolver): void
     {
         Serializers\Native::$resolveUseVariables = $resolver;
     }
@@ -115,7 +104,7 @@ class SerializableClosure
      *
      * @throws \Laravel\SerializableClosure\Exceptions\InvalidSignatureException
      */
-    public function __unserialize($data)
+    public function __unserialize(array $data)
     {
         if (Signed::$signer && ! $data['serializable'] instanceof Signed) {
             throw new InvalidSignatureException();

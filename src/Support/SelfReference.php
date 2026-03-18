@@ -5,20 +5,16 @@ namespace Laravel\SerializableClosure\Support;
 class SelfReference
 {
     /**
-     * The unique hash representing the object.
-     *
-     * @var string
-     */
-    public $hash;
-
-    /**
      * Creates a new self reference instance.
      *
      * @param  string  $hash
-     * @return void
      */
-    public function __construct($hash)
+    public function __construct(
+        /**
+         * The unique hash representing the object.
+         */
+        public $hash
+    )
     {
-        $this->hash = $hash;
     }
 }

@@ -47,9 +47,8 @@ class ClosureStream
      * @param  string  $mode
      * @param  string  $options
      * @param  string|null  $opened_path
-     * @return bool
      */
-    public function stream_open($path, $mode, $options, &$opened_path)
+    public function stream_open($path, $mode, $options, &$opened_path): bool
     {
         $this->content = "<?php\nreturn ".substr($path, strlen(static::STREAM_PROTO.'://')).';';
         $this->length = strlen($this->content);
@@ -61,9 +60,8 @@ class ClosureStream
      * Read from stream.
      *
      * @param  int  $count
-     * @return string
      */
-    public function stream_read($count)
+    public function stream_read($count): string
     {
         $value = substr($this->content, $this->pointer, $count);
 
@@ -74,10 +72,8 @@ class ClosureStream
 
     /**
      * Tests for end-of-file on a file pointer.
-     *
-     * @return bool
      */
-    public function stream_eof()
+    public function stream_eof(): bool
     {
         return $this->pointer >= $this->length;
     }
@@ -88,9 +84,8 @@ class ClosureStream
      * @param  int  $option
      * @param  int  $arg1
      * @param  int  $arg2
-     * @return bool
      */
-    public function stream_set_option($option, $arg1, $arg2)
+    public function stream_set_option($option, $arg1, $arg2): bool
     {
         return false;
     }
@@ -130,9 +125,8 @@ class ClosureStream
      *
      * @param  int  $offset
      * @param  int  $whence
-     * @return bool
      */
-    public function stream_seek($offset, $whence = SEEK_SET)
+    public function stream_seek($offset, $whence = SEEK_SET): bool
     {
         $crt = $this->pointer;
 
@@ -169,13 +163,11 @@ class ClosureStream
 
     /**
      * Registers the stream.
-     *
-     * @return void
      */
-    public static function register()
+    public static function register(): void
     {
         if (! static::$isRegistered) {
-            static::$isRegistered = stream_wrapper_register(static::STREAM_PROTO, __CLASS__);
+            static::$isRegistered = stream_wrapper_register(static::STREAM_PROTO, self::class);
         }
     }
 }

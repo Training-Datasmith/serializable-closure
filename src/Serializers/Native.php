@@ -32,13 +32,6 @@ class Native implements Serializable
     public static $resolveUseVariables;
 
     /**
-     * The closure to be serialized/unserialized.
-     *
-     * @var \Closure
-     */
-    protected $closure;
-
-    /**
      * The closure's reflection.
      *
      * @var \Laravel\SerializableClosure\Support\ReflectionClosure|null
@@ -73,21 +66,20 @@ class Native implements Serializable
 
     /**
      * Creates a new serializable closure instance.
-     *
-     * @param  \Closure  $closure
-     * @return void
      */
-    public function __construct(Closure $closure)
+    public function __construct(
+        /**
+         * The closure to be serialized/unserialized.
+         */
+        protected \Closure $closure
+    )
     {
-        $this->closure = $closure;
     }
 
     /**
      * Resolve the closure with the given arguments.
-     *
-     * @return mixed
      */
-    public function __invoke()
+    public function __invoke(): mixed
     {
         return call_user_func_array($this->closure, func_get_args());
     }
@@ -209,9 +201,8 @@ class Native implements Serializable
      *
      * @param  mixed  $data
      * @param  \Laravel\SerializableClosure\Support\ClosureScope  $storage
-     * @return void
      */
-    public static function wrapClosures(&$data, $storage)
+    public static function wrapClosures(&$data, $storage): void
     {
         if ($data instanceof Closure) {
             $data = new static($data);
@@ -269,10 +260,15 @@ class Native implements Serializable
                 }
 
                 foreach ($reflection->getProperties() as $property) {
-                    if ($property->isStatic() || ! $property->getDeclaringClass()->isUserDefined() || static::isVirtualProperty($property)) {
+                    if ($property->isStatic()) {
                         continue;
                     }
-
+                    if (! $property->getDeclaringClass()->isUserDefined()) {
+                        continue;
+                    }
+                    if (static::isVirtualProperty($property)) {
+                        continue;
+                    }
                     if (! $property->isInitialized($instance)) {
                         continue;
                     }
@@ -326,11 +322,13 @@ class Native implements Serializable
             foreach ($data as $key => &$value) {
                 if ($key === self::ARRAY_RECURSIVE_KEY) {
                     continue;
-                } elseif ($value instanceof static) {
+                }
+                if ($value instanceof static) {
                     $data[$key] = &$value->closure;
                 } elseif ($value instanceof SelfReference && $value->hash === $this->code['self']) {
                     $data[$key] = &$this->closure;
-                } else {
+                }
+                else {
                     $this->mapPointers($value);
                 }
             }
@@ -367,14 +365,21 @@ class Native implements Serializable
                 }
 
                 foreach ($reflection->getProperties() as $property) {
-                    if ($property->isStatic() || ! $property->getDeclaringClass()->isUserDefined() || static::isVirtualProperty($property)) {
+                    if ($property->isStatic()) {
                         continue;
                     }
-
-                    if (! $property->isInitialized($data) || $property->isReadOnly()) {
+                    if (! $property->getDeclaringClass()->isUserDefined()) {
                         continue;
                     }
-
+                    if (static::isVirtualProperty($property)) {
+                        continue;
+                    }
+                    if (! $property->isInitialized($data)) {
+                        continue;
+                    }
+                    if ($property->isReadOnly()) {
+                        continue;
+                    }
                     $item = $property->getValue($data);
 
                     if ($item instanceof SerializableClosure || $item instanceof UnsignedSerializableClosure || ($item instanceof SelfReference && $item->hash === $this->code['self'])) {
@@ -487,14 +492,21 @@ class Native implements Serializable
                 }
 
                 foreach ($reflection->getProperties() as $property) {
-                    if ($property->isStatic() || ! $property->getDeclaringClass()->isUserDefined() || static::isVirtualProperty($property)) {
+                    if ($property->isStatic()) {
                         continue;
                     }
-
-                    if (! $property->isInitialized($instance) || ($property->isReadOnly() && $property->class !== $reflection->name)) {
+                    if (! $property->getDeclaringClass()->isUserDefined()) {
                         continue;
                     }
-
+                    if (static::isVirtualProperty($property)) {
+                        continue;
+                    }
+                    if (! $property->isInitialized($instance)) {
+                        continue;
+                    }
+                    if ($property->isReadOnly() && $property->class !== $reflection->name) {
+                        continue;
+                    }
                     $value = $property->getValue($instance);
 
                     if (is_array($value) || is_object($value)) {
@@ -509,9 +521,6 @@ class Native implements Serializable
 
     /**
      * Determine is virtual property.
-     *
-     * @param  \ReflectionProperty  $property
-     * @return bool
      */
     protected static function isVirtualProperty(ReflectionProperty $property): bool
     {

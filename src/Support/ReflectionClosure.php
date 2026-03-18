@@ -29,20 +29,14 @@ class ReflectionClosure extends ReflectionFunction
 
     /**
      * Creates a new reflection closure instance.
-     *
-     * @param  \Closure  $closure
-     * @param  string|null  $code
-     * @return void
      */
-    public function __construct(Closure $closure, $code = null)
+    public function __construct(Closure $closure)
     {
         parent::__construct($closure);
     }
 
     /**
      * Checks if the closure is "static".
-     *
-     * @return bool
      */
     public function isStatic(): bool
     {
@@ -200,7 +194,7 @@ class ReflectionClosure extends ReflectionFunction
                         case T_NS_SEPARATOR:
                         case T_STRING:
                             $id_start = $token[1];
-                            $id_start_ci = strtolower($id_start);
+                            $id_start_ci = strtolower((string) $id_start);
                             $id_name = '';
                             $context = 'args';
                             $state = 'id_name';
@@ -232,7 +226,7 @@ class ReflectionClosure extends ReflectionFunction
                 case 'use':
                     switch ($token[0]) {
                         case T_VARIABLE:
-                            $use[] = substr($token[1], 1);
+                            $use[] = substr((string) $token[1], 1);
                             $code .= $token[1];
                             break;
                         case '{':
@@ -259,7 +253,7 @@ class ReflectionClosure extends ReflectionFunction
                         case T_NS_SEPARATOR:
                         case T_STRING:
                             $id_start = $token[1];
-                            $id_start_ci = strtolower($id_start);
+                            $id_start_ci = strtolower((string) $id_start);
                             $id_name = '';
                             $context = 'return_type';
                             $state = 'id_name';
@@ -372,7 +366,7 @@ class ReflectionClosure extends ReflectionFunction
                             $code .= $inside_structure ? $token[1] : $_method;
                             break;
                         case T_COMMENT:
-                            if (substr($token[1], 0, 8) === '#trackme') {
+                            if (str_starts_with((string) $token[1], '#trackme')) {
                                 $timestamp = time();
                                 $code .= '/**'.PHP_EOL;
                                 $code .= '* Date      : '.date(DATE_W3C, $timestamp).PHP_EOL;
@@ -394,7 +388,7 @@ class ReflectionClosure extends ReflectionFunction
                         case T_NS_SEPARATOR:
                         case T_STRING:
                             $id_start = $token[1];
-                            $id_start_ci = strtolower($id_start);
+                            $id_start_ci = strtolower((string) $id_start);
                             $id_name = '';
                             $context = 'root';
                             $state = 'id_name';
@@ -510,7 +504,7 @@ class ReflectionClosure extends ReflectionFunction
                         case T_STRING:
                         case T_STATIC:
                             $id_start = $token[1];
-                            $id_start_ci = strtolower($id_start);
+                            $id_start_ci = strtolower((string) $id_start);
                             $id_name = '';
                             $state = 'id_name';
                             break 2;
@@ -552,7 +546,7 @@ class ReflectionClosure extends ReflectionFunction
                             if ($isShortClosure) {
                                 $open++;
                             }
-                            if ($context === 'new' || false !== strpos($id_name, '\\')) {
+                            if ($context === 'new' || str_contains((string) $id_name, '\\')) {
                                 if ($id_start_ci === 'self' || $id_start_ci === 'static') {
                                     if (! $inside_structure) {
                                         $isUsingScope = true;
@@ -674,7 +668,7 @@ class ReflectionClosure extends ReflectionFunction
                         case T_NS_SEPARATOR:
                         case T_STRING:
                             $id_start = $token[1];
-                            $id_start_ci = strtolower($id_start);
+                            $id_start_ci = strtolower((string) $id_start);
                             $id_name = '';
                             $state = 'id_name';
                             $context = 'extends';
@@ -695,15 +689,15 @@ class ReflectionClosure extends ReflectionFunction
             }
         }
 
-        $attributesCode = array_map(function ($attribute) {
+        $attributesCode = array_map(function (\ReflectionAttribute $attribute): string {
             $arguments = $attribute->getArguments();
 
             $name = $attribute->getName();
-            $arguments = implode(', ', array_map(function ($argument, $key) {
+            $arguments = implode(', ', array_map(function ($argument, int|string $key): ?string {
                 $argument = var_export($argument, true);
 
                 if (is_string($key)) {
-                    $argument = sprintf('%s: %s', $key, $argument);
+                    return sprintf('%s: %s', $key, $argument);
                 }
 
                 return $argument;
@@ -764,10 +758,8 @@ class ReflectionClosure extends ReflectionFunction
 
     /**
      * Get PHP native built in types.
-     *
-     * @return array
      */
-    protected static function getBuiltinTypes()
+    protected static function getBuiltinTypes(): array
     {
         return ['array', 'callable', 'string', 'int', 'bool', 'float', 'iterable', 'void', 'object', 'mixed', 'false', 'null', 'never'];
     }
@@ -803,7 +795,7 @@ class ReflectionClosure extends ReflectionFunction
                 case 'use':
                     if ($is_array) {
                         if ($token[0] === T_VARIABLE) {
-                            $use[] = substr($token[1], 1);
+                            $use[] = substr((string) $token[1], 1);
                         }
                     } elseif ($token == ')') {
                         break 2;
@@ -1111,7 +1103,7 @@ class ReflectionClosure extends ReflectionFunction
                             break;
                         case T_NAME_QUALIFIED:
                             $name .= $token[1];
-                            $pieces = explode('\\', $token[1]);
+                            $pieces = explode('\\', (string) $token[1]);
                             $alias = end($pieces);
                             break;
                         case T_AS:
@@ -1151,7 +1143,7 @@ class ReflectionClosure extends ReflectionFunction
                             break;
                         case T_NAME_QUALIFIED:
                             $name .= $token[1];
-                            $pieces = explode('\\', $token[1]);
+                            $pieces = explode('\\', (string) $token[1]);
                             $alias = end($pieces);
                             break;
                         case T_STRING:
@@ -1286,9 +1278,8 @@ class ReflectionClosure extends ReflectionFunction
      * Parse the given token.
      *
      * @param  string  $token
-     * @return array
      */
-    protected function parseNameQualified($token)
+    protected function parseNameQualified($token): array
     {
         $pieces = explode('\\', $token);
 
@@ -1310,9 +1301,8 @@ class ReflectionClosure extends ReflectionFunction
      * @param  bool  $isShortClosure
      * @param  bool  $isUsingThisObject
      * @param  bool  $isUsingScope
-     * @return array
      */
-    protected function collectCandidate(&$candidates, $code, $use, $isShortClosure, $isUsingThisObject, $isUsingScope)
+    protected function collectCandidate(&$candidates, $code, $use, $isShortClosure, $isUsingThisObject, $isUsingScope): array
     {
         $candidates[] = [
             'code' => $code,
@@ -1336,10 +1326,9 @@ class ReflectionClosure extends ReflectionFunction
     /**
      * Apply a candidate's properties to this instance.
      *
-     * @param  array  $candidate
      * @return void
      */
-    protected function applyCandidate($candidate)
+    protected function applyCandidate(array $candidate)
     {
         if ($candidate['isShortClosure']) {
             $this->useVariables = $this->getStaticVariables();
@@ -1356,18 +1345,15 @@ class ReflectionClosure extends ReflectionFunction
 
     /**
      * Verify that a candidate matches the closure's signature.
-     *
-     * @param  array  $candidate
-     * @return bool
      */
-    protected function verifyCandidateSignature($candidate)
+    protected function verifyCandidateSignature(array $candidate): bool
     {
         $code = $candidate['code'];
         $use = $candidate['use'];
         $isShortClosure = $candidate['isShortClosure'];
 
         // Check if code starts with 'static' (more precise than searching anywhere in code)
-        $isStaticCode = strtolower(substr(ltrim($code), 0, 6)) === 'static';
+        $isStaticCode = strtolower(substr(ltrim((string) $code), 0, 6)) === 'static';
         if (parent::isStatic() !== $isStaticCode) {
             return false;
         }

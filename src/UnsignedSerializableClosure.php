@@ -15,9 +15,6 @@ class UnsignedSerializableClosure
 
     /**
      * Creates a new serializable closure instance.
-     *
-     * @param  \Closure  $closure
-     * @return void
      */
     public function __construct(Closure $closure)
     {
@@ -26,10 +23,8 @@ class UnsignedSerializableClosure
 
     /**
      * Resolve the closure with the given arguments.
-     *
-     * @return mixed
      */
-    public function __invoke()
+    public function __invoke(): mixed
     {
         return call_user_func_array($this->serializable, func_get_args());
     }
@@ -62,7 +57,7 @@ class UnsignedSerializableClosure
      * @param  array{serializable: \Laravel\SerializableClosure\Contracts\Serializable}  $data
      * @return void
      */
-    public function __unserialize($data)
+    public function __unserialize(array $data)
     {
         $this->serializable = $data['serializable'];
     }
