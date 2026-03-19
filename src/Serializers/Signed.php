@@ -71,10 +71,18 @@ class Signed implements Serializable
      * @return void
      *
      * @throws \Laravel\SerializableClosure\Exceptions\InvalidSignatureException
+     * @throws \Laravel\SerializableClosure\Exceptions\MissingSecretKeyException
      */
     public function __unserialize(array $signature)
     {
-        if (static::$signer && ! static::$signer->verify($signature)) {
+        if (! static::$signer) {
+            // No signer is configured. Calling unserialize() on an unsigned payload is a PHP
+            // object injection risk — deserializing untrusted data can trigger arbitrary gadget
+            // chains. Refuse to proceed rather than silently skip signature verification.
+            throw new MissingSecretKeyException();
+        }
+
+        if (! static::$signer->verify($signature)) {
             throw new InvalidSignatureException();
         }
 
