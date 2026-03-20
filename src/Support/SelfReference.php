@@ -1,10 +1,9 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Laravel\Serializable_Closure\Support;
 
-namespace Laravel\SerializableClosure\Support;
-
-class SelfReference
+class Self_Reference
 {
     /**
      * Creates a new self reference instance.
@@ -16,6 +15,7 @@ class SelfReference
          * The unique hash representing the object.
          */
         public $hash
-    ) {
+    )
+    {
     }
 }

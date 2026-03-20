@@ -1,8 +1,7 @@
 <?php
 
-declare(strict_types=1);
-
-namespace Laravel\SerializableClosure\Contracts;
+declare (strict_types=1);
+namespace Laravel\Serializable_Closure\Contracts;
 
 interface Signer
 {
@@ -13,7 +12,6 @@ interface Signer
      * @return array
      */
     public function sign($serializable);
-
     /**
      * Verify the given signature.
      *

@@ -1,13 +1,11 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Laravel\Serializable_Closure\Serializers;
 
-namespace Laravel\SerializableClosure\Serializers;
-
-use Laravel\SerializableClosure\Contracts\Serializable;
-use Laravel\SerializableClosure\Exceptions\InvalidSignatureException;
-use Laravel\SerializableClosure\Exceptions\MissingSecretKeyException;
-
+use Laravel\Serializable_Closure\Contracts\Serializable;
+use Laravel\Serializable_Closure\Exceptions\Invalid_Signature_Exception;
+use Laravel\Serializable_Closure\Exceptions\Missing_Secret_Key_Exception;
 class Signed implements Serializable
 {
     /**
@@ -16,7 +14,6 @@ class Signed implements Serializable
      * @var \Laravel\SerializableClosure\Contracts\Signer|null
      */
     public static $signer;
-
     /**
      * Creates a new serializable closure instance.
      *
@@ -27,9 +24,9 @@ class Signed implements Serializable
          * The closure to be serialized/unserialized.
          */
         protected $closure
-    ) {
+    )
+    {
     }
-
     /**
      * Resolve the closure with the given arguments.
      */
@@ -37,17 +34,15 @@ class Signed implements Serializable
     {
         return call_user_func_array($this->closure, func_get_args());
     }
-
     /**
      * Gets the closure.
      *
      * @return \Closure
      */
-    public function getClosure()
+    public function get_closure()
     {
         return $this->closure;
     }
-
     /**
      * Get the serializable representation of the closure.
      *
@@ -55,15 +50,11 @@ class Signed implements Serializable
      */
     public function __serialize()
     {
-        if (! static::$signer) {
-            throw new MissingSecretKeyException();
+        if (!static::$signer) {
+            throw new Missing_Secret_Key_Exception();
         }
-
-        return static::$signer->sign(
-            serialize(new Native($this->closure))
-        );
+        return static::$signer->sign(serialize(new Native($this->closure)));
     }
-
     /**
      * Restore the closure after serialization.
      *
@@ -75,20 +66,17 @@ class Signed implements Serializable
      */
     public function __unserialize(array $signature)
     {
-        if (! static::$signer) {
+        if (!static::$signer) {
             // No signer is configured. Calling unserialize() on an unsigned payload is a PHP
             // object injection risk — deserializing untrusted data can trigger arbitrary gadget
             // chains. Refuse to proceed rather than silently skip signature verification.
-            throw new MissingSecretKeyException();
+            throw new Missing_Secret_Key_Exception();
         }
-
-        if (! static::$signer->verify($signature)) {
-            throw new InvalidSignatureException();
+        if (!static::$signer->verify($signature)) {
+            throw new Invalid_Signature_Exception();
         }
-
         /** @var \Laravel\SerializableClosure\Contracts\Serializable $serializable */
         $serializable = unserialize($signature['serializable']);
-
-        $this->closure = $serializable->getClosure();
+        $this->closure = $serializable->get_closure();
     }
 }

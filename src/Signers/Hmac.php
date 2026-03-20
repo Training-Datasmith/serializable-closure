@@ -1,11 +1,9 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Laravel\Serializable_Closure\Signers;
 
-namespace Laravel\SerializableClosure\Signers;
-
-use Laravel\SerializableClosure\Contracts\Signer;
-
+use Laravel\Serializable_Closure\Contracts\Signer;
 class Hmac implements Signer
 {
     /**
@@ -18,9 +16,9 @@ class Hmac implements Signer
          * The secret key.
          */
         protected $secret
-    ) {
+    )
+    {
     }
-
     /**
      * Sign the given serializable.
      *
@@ -28,12 +26,8 @@ class Hmac implements Signer
      */
     public function sign($serialized): array
     {
-        return [
-            'serializable' => $serialized,
-            'hash' => base64_encode(hash_hmac('sha256', $serialized, $this->secret, true)),
-        ];
+        return ['serializable' => $serialized, 'hash' => base64_encode(hash_hmac('sha256', $serialized, $this->secret, true))];
     }
-
     /**
      * Verify the given signature.
      *
@@ -41,8 +35,6 @@ class Hmac implements Signer
      */
     public function verify($signature): bool
     {
-        return hash_equals(base64_encode(
-            hash_hmac('sha256', $signature['serializable'], $this->secret, true)
-        ), $signature['hash']);
+        return hash_equals(base64_encode(hash_hmac('sha256', $signature['serializable'], $this->secret, true)), $signature['hash']);
     }
 }

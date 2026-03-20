@@ -1,12 +1,10 @@
 <?php
 
-declare(strict_types=1);
-
-namespace Laravel\SerializableClosure\Exceptions;
+declare (strict_types=1);
+namespace Laravel\Serializable_Closure\Exceptions;
 
 use Exception;
-
-class PhpVersionNotSupportedException extends Exception
+class Php_Version_Not_Supported_Exception extends Exception
 {
     /**
      * Create a new exception instance.

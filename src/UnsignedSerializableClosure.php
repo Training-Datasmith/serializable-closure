@@ -1,12 +1,10 @@
 <?php
 
-declare(strict_types=1);
-
-namespace Laravel\SerializableClosure;
+declare (strict_types=1);
+namespace Laravel\Serializable_Closure;
 
 use Closure;
-
-class UnsignedSerializableClosure
+class Unsigned_Serializable_Closure
 {
     /**
      * The closure's serializable.
@@ -14,7 +12,6 @@ class UnsignedSerializableClosure
      * @var \Laravel\SerializableClosure\Contracts\Serializable
      */
     protected $serializable;
-
     /**
      * Creates a new serializable closure instance.
      */
@@ -22,7 +19,6 @@ class UnsignedSerializableClosure
     {
         $this->serializable = new Serializers\Native($closure);
     }
-
     /**
      * Resolve the closure with the given arguments.
      */
@@ -30,17 +26,15 @@ class UnsignedSerializableClosure
     {
         return call_user_func_array($this->serializable, func_get_args());
     }
-
     /**
      * Gets the closure.
      *
      * @return \Closure
      */
-    public function getClosure()
+    public function get_closure()
     {
-        return $this->serializable->getClosure();
+        return $this->serializable->get_closure();
     }
-
     /**
      * Get the serializable representation of the closure.
      *
@@ -48,11 +42,8 @@ class UnsignedSerializableClosure
      */
     public function __serialize()
     {
-        return [
-            'serializable' => $this->serializable,
-        ];
+        return ['serializable' => $this->serializable];
     }
-
     /**
      * Restore the closure after serialization.
      *

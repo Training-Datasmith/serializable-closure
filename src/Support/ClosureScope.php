@@ -1,12 +1,10 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Laravel\Serializable_Closure\Support;
 
-namespace Laravel\SerializableClosure\Support;
-
-use SplObjectStorage;
-
-class ClosureScope extends SplObjectStorage
+use Spl_Object_Storage;
+class Closure_Scope extends Spl_Object_Storage
 {
     /**
      * The number of serializations in current scope.
@@ -14,11 +12,10 @@ class ClosureScope extends SplObjectStorage
      * @var int
      */
     public $serializations = 0;
-
     /**
      * The number of closures that have to be serialized.
      *
      * @var int
      */
-    public $toSerialize = 0;
+    public $to_serialize = 0;
 }
